@@ -1,14 +1,17 @@
 import Song from "./components/song/song"
-import songList from "./api/songList";
-import DragDropList from "./components/song/DragDropList";
+import DragDropList from "./components/DragDropList";
+import NavBar from "./components/NavBar";
 
 function App() {
 
 
   return (
-    <div >
-      <DragDropList />
-    </div >
+    <>
+      <NavBar />
+      <div >
+        <DragDropList />
+      </div >
+    </>
   )
 }
 

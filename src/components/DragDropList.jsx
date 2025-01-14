@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import "./Song.css"
-import Song from "./song";
+import "./song/Song.css"
+import Song from "./song/song";
+import { songLists } from "../api/songList";
 
 const DragDropList = () => {
+
     // Initial list of items
-    const [songList, setSongList] = useState([
-        { id: "1", index: "1", name: "Die with A smile", artist: "Bruno mars", length: "4:12" },
-        { id: "2", index: "2", name: "Sweater Weather", artist: "The Neighbourhood", length: "4:00" },
-        { id: "3", index: "3", name: "Not like us", artist: "Kendrick Lamar", length: "4:34" },
-    ]);
+
+    const [songList, setSongList] = useState(songLists);
 
     // Handle drag end and reorder the items
     const handleOnDragEnd = (result) => {
         const { destination, source } = result;
-        console.log(result);
         // If dropped outside the list or no change in position
         if (!destination || destination.index === source.index) {
             return;
@@ -27,6 +25,10 @@ const DragDropList = () => {
 
         setSongList(reorderedItems); // Update the state with the new order
     };
+    const deleteSong = (index) => {
+        const newSongList = songList.filter((_, i) => i !== index);
+        setSongList(newSongList);
+    }
 
     return (
         <DragDropContext onDragEnd={handleOnDragEnd}>
@@ -52,7 +54,7 @@ const DragDropList = () => {
                                             ...provided.draggableProps.style, // Necessary for drag effect
                                         }}
                                     >
-                                        <Song key={song.id} rank={index + 1} name={song.name} artist={song.artist} length={song.length} />
+                                        <Song key={song.id} index={index} rank={index + 1} name={song.name} artist={song.artist} length={song.length} deleteSong={deleteSong} />
                                     </li>
                                 )}
                             </Draggable>
