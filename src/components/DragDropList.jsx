@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import "./song/Song.css"
 import Song from "./song/song";
 import { songLists } from "../api/songList";
 
@@ -46,7 +45,6 @@ const DragDropList = () => {
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
-
                                         style={{
                                             width: "100%",
                                             display: "flex",

@@ -1,6 +1,5 @@
-import Song from "./components/song/song"
 import DragDropList from "./components/DragDropList";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/NavBar/NavBar";
 
 function App() {
 

@@ -1,4 +1,4 @@
-.song-container {
+.songContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -9,15 +9,15 @@
   background-color: hsl(0, 0%, 15%);
   color: white;
 }
-.song-container h2 {
+.songContainer h2 {
   font-size: 2rem;
   margin: 5px;
 }
-.song-container p {
+.songContainer p {
   font-size: 2rem;
   margin: 5px;
 }
-.delete-song-button {
+.deleteSongButton {
   height: 50px;
   width: 50px;
   display: flex;
@@ -25,12 +25,12 @@
   justify-content: center;
   border-radius: 25px;
 }
-.delete-song-button:hover {
+.deleteSongButton:hover {
   background-color: hsl(0, 0%, 35%);
   transition: ease 0.25s;
   cursor: pointer;
 }
-.song-list {
+.songList {
   padding: 0;
   margin: 20px;
   width: 100%;
