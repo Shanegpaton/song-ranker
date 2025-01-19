@@ -1,6 +1,6 @@
 import './NavBar.module.css';
 import { FaHome } from 'react-icons/fa';
-import Popup from './NavPopup';
+import Popup from './Popup/NavPopup';
 
 function NavBar() {
 

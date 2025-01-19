@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Buffer } from 'buffer';
+import { itemOptionList } from './songList';
 
 const client_id = '61da338eac6f4bcd9642daeed0378eb4';
 const client_secret = 'dc0d1206385f4020977ad6f79b7fade3';
@@ -135,7 +136,9 @@ export async function searchItem(type, name) {
         const items = path.split('.').reduce((acc, key) => acc && acc[key], response);
 
         if (items) {
-            console.log(items); // Log the result to check
+            items.forEach((item) => {
+                itemOptionList.push(item);
+            })
             return items;
         } else {
             console.log('No items found.');
