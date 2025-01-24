@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { Buffer } from 'buffer';
-import { itemOptionList } from './songList';
 
 const client_id = '61da338eac6f4bcd9642daeed0378eb4';
 const client_secret = 'dc0d1206385f4020977ad6f79b7fade3';
@@ -20,28 +19,8 @@ async function getAccessToken() {
     return tokenResponse.data.access_token;
 }
 
-// Function to search for an artist
-async function searchArtist(accessToken, artistName) {
-    const response = await axios.get('https://api.spotify.com/v1/search', {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-        },
-        params: {
-            q: artistName,
-            type: 'artist',
-            limit: 1, // Limit the results to 1
-        },
-    });
-
-    if (response.data.artists.items.length === 0) {
-        throw new Error('Artist not found');
-    }
-
-    return response.data.artists.items[0]; // Return the first artist found
-}
-
 // Function to get all albums by an artist (only albums, not playlists or singles)
-async function getAllAlbums(accessToken, artistId, includeGroups) {
+async function getAllAlbums(artistId, includeGroups) {
     let albums = [];
     let nextPage = `https://api.spotify.com/v1/artists/${artistId}/albums`;
 
@@ -49,7 +28,7 @@ async function getAllAlbums(accessToken, artistId, includeGroups) {
     while (nextPage) {
         const response = await axios.get(nextPage, {
             headers: {
-                'Authorization': `Bearer ${accessToken}`,
+                'Authorization': `Bearer ${await getAccessToken()}`,
             },
             params: {
                 market: 'US', // Specify the market (e.g., US)
@@ -65,50 +44,72 @@ async function getAllAlbums(accessToken, artistId, includeGroups) {
 }
 
 // Function to get all tracks from an album
-async function getTracksFromAlbum(accessToken, albumId) {
+// export async function getTracksFromAlbum(albumId) {
+//     let tracks = [];
+//     let nextPage = `https://api.spotify.com/v1/albums/${albumId}/tracks`;
+
+//     // Loop through the paginated tracks
+//     while (nextPage) {
+//         const response = await axios.get(nextPage, {
+//             headers: {
+//                 'Authorization': `Bearer ${await getAccessToken()}`,
+//             },
+//             params: {
+//                 limit: 50, // Number of tracks per request
+//             },
+//         });
+
+//         tracks = tracks.concat(response.data.items); // Concatenate tracks into the array
+//         nextPage = response.data.next; // Get the next page URL for pagination
+//     }
+
+//     return tracks; // Return all tracks
+// }
+
+// Function to get all tracks from an album and include album properties in each track
+export async function getTracksFromAlbum(album) {
     let tracks = [];
-    let nextPage = `https://api.spotify.com/v1/albums/${albumId}/tracks`;
+    let nextPage = `https://api.spotify.com/v1/albums/${album.id}/tracks`;
 
     // Loop through the paginated tracks
     while (nextPage) {
         const response = await axios.get(nextPage, {
             headers: {
-                'Authorization': `Bearer ${accessToken}`,
+                'Authorization': `Bearer ${await getAccessToken()}`,
             },
             params: {
                 limit: 50, // Number of tracks per request
             },
         });
 
+        // Loop through the tracks and add album properties to each track
+
+        if (album) {
+            response.data.items.forEach(track => {
+                track.album = album; // Add album properties to the track
+            });
+        }
+
         tracks = tracks.concat(response.data.items); // Concatenate tracks into the array
         nextPage = response.data.next; // Get the next page URL for pagination
     }
 
-    return tracks; // Return all tracks
+    return tracks; // Return all tracks with album properties included
 }
 
-// Main function to combine everything and get all artist songs
-export async function findArtistAndSongs(artistName, includeGroups) {
-    try {
-        const accessToken = await getAccessToken();
-        const artist = await searchArtist(accessToken, artistName);
-        console.log(`Found Artist: ${artist.name} (ID: ${artist.id})`);
 
-        const albums = await getAllAlbums(accessToken, artist.id, includeGroups);
+// Main function to combine everything and get all artist 2s
+export async function findArtistAndSongs(artistId, includeGroups) {
+    try {
+        const albums = await getAllAlbums(artistId, includeGroups);
         let allTracks = [];
 
         // Iterate through each album and fetch tracks
         for (const album of albums) {
-            console.log(`Fetching tracks for album: ${album.name}`);
-            const tracks = await getTracksFromAlbum(accessToken, album.id);
+            const tracks = await getTracksFromAlbum(album);
             allTracks = allTracks.concat(tracks); // Concatenate tracks into the array
         }
-
-        // Print all songs
-        console.log(`All Songs for ${artist.name}:`);
-        allTracks.forEach((track, index) => {
-            console.log(`${index + 1}. ${track.name}`);
-        });
+        return (allTracks);
     } catch (error) {
         console.error('Error:', error.message);
     }
@@ -136,9 +137,6 @@ export async function searchItem(type, name) {
         const items = path.split('.').reduce((acc, key) => acc && acc[key], response);
 
         if (items) {
-            items.forEach((item) => {
-                itemOptionList.push(item);
-            })
             return items;
         } else {
             console.log('No items found.');

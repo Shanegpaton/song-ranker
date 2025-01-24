@@ -1,13 +1,26 @@
 .item {
   display: flex;
-  margin: 10px;
+  padding: 20px;
   align-items: center;
+  border-radius: 5px;
+}
+.item:hover {
+  background-color: hsl(0, 0%, 15%);
 }
 
 .image {
-  width: 60px;
-  height: 60px;
+  border-radius: 5px;
+  width: 100px;
+  height: 100px;
   margin-right: 10px;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  align-items: start;
+  margin-left: 5px;
 }
 
 .title {
@@ -18,7 +31,12 @@
 
 .artists {
   display: flex;
-  margin-top: 5px;
   color: gray;
   font-size: 14px;
+}
+.selected {
+  background-color: hsl(0, 0%, 30%);
+}
+.selected:hover {
+  background-color: hsl(0, 0%, 30%);
 }

@@ -6,18 +6,20 @@
   padding: 10px 20px;
   margin: 10px 0;
   width: 80%;
+  height: 50px;
   background-color: hsl(0, 0%, 15%);
   color: white;
 }
-.songContainer h2 {
+.ranking {
   font-size: 2rem;
   margin: 5px;
 }
-.songContainer p {
-  font-size: 2rem;
+.songName {
+  font-size: 1.5rem;
   margin: 5px;
 }
 .deleteSongButton {
+  font-size: 3rem;
   height: 50px;
   width: 50px;
   display: flex;

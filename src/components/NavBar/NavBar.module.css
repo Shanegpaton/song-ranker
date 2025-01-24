@@ -1,4 +1,4 @@
-nav {
+.navBar {
   color: white;
   display: flex;
   justify-content: space-between;
@@ -6,7 +6,7 @@ nav {
   padding: 0;
   align-items: center;
 }
-button {
+.homeButton {
   color: white;
   background-color: black;
   border: none;
@@ -18,7 +18,7 @@ button {
   justify-content: center;
   align-items: center;
 }
-button:hover {
+.homeButton:hover {
   background-color: hsl(0, 0%, 25%);
 
   transition: ease 0.25s;

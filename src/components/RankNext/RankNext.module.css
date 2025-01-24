@@ -1,0 +1,6 @@
+.unrankedDisplay {
+  display: flex;
+  background-color: hsl(0, 0%, 15%);
+  color: white;
+  justify-content: center;
+}

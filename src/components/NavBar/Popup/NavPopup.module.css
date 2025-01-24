@@ -1,3 +1,22 @@
+.popupButton {
+  color: white;
+  background-color: black;
+  border: none;
+  font-size: 2rem;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popupButton:hover {
+  background-color: hsl(0, 0%, 25%);
+
+  transition: ease 0.25s;
+  cursor: pointer;
+}
+
 .tabSelector {
   display: flex;
   justify-content: flex-start;
@@ -15,17 +34,173 @@
   justify-content: center;
   align-items: center;
   inset: 0;
-  background-color: hsla(0, 0%, 62%, 0.508);
+  background-color: hsla(0, 0%, 62%, 0.5);
 }
 .popupContent {
   background-color: black;
-  width: 80%;
-  height: 80%;
   display: block;
   border-radius: 50px;
-  padding: 10px;
+  padding: 10px 30px;
+  display: flex;
+  flex-direction: column;
 }
+.searchBar {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 40px;
+  min-width: 250px;
+  background-color: hsl(0, 0%, 15%);
+  border: none;
+  border-radius: 50px;
+  color: white;
+  padding-left: 8px;
+  margin-bottom: 10px;
+}
+input[type="search"]::-webkit-search-cancel-button {
+  background: none;
+  color: white;
+  cursor: pointer;
+}
+
+.searchBar:hover {
+  cursor: text;
+  background-color: hsl(0, 0%, 20%);
+}
+
+.searchBar:focus-within {
+  background-color: hsl(0, 0%, 20%);
+  outline: 2px solid white;
+  cursor: text;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.3s;
+  margin: 0;
+  height: 100%;
+  width: 45px;
+}
+
+.tooltip {
+  visibility: hidden;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.searchIcon:hover .tooltip {
+  visibility: visible;
+  background-color: hsl(0, 0%, 20%);
+  opacity: 1;
+}
+.searchIcon:hover {
+  background: none;
+}
+.searchInput {
+  flex-grow: 1;
+  min-height: 40px;
+  min-width: 400px;
+  background-color: hsl(0, 0%, 15%);
+  border: none;
+  border-radius: 50px;
+  color: white;
+  padding-left: 40px;
+}
+
+.searchInput:hover {
+  cursor: text;
+  background-color: hsl(0, 0%, 20%);
+}
+
+.searchInput:focus {
+  background-color: hsl(0, 0%, 20%);
+  outline: none;
+}
+
+.clearButton {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: hsl(0, 0%, 70%);
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 45px;
+}
+.clearButton:hover {
+  color: hsl(0, 0%, 100%);
+}
+
 .submitButton:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.finishButtons {
+  display: flex;
+  align-items: end;
+  justify-content: end;
+}
+
+.addButton {
+  width: 100px;
+  height: 50px;
+  background-color: hsl(141, 73%, 42%);
+  color: black;
+  border-radius: 30px;
+  font-size: 1.3rem;
+  border: none;
+  margin: 10px;
+}
+.addButton:hover {
+  cursor: pointer;
+  font-size: 1.4rem;
+  background-color: hsl(141, 73%, 48%);
+}
+
+.closeButton {
+  width: 100px;
+  height: 50px;
+  background-color: black;
+  color: white;
+  border-radius: 30px;
+  font-size: 1.3rem;
+  border: none;
+  margin: 10px;
+}
+.closeButton:hover {
+  cursor: pointer;
+  font-size: 1.4rem;
 }
