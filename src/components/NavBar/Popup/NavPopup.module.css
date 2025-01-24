@@ -29,6 +29,7 @@
 }
 
 .popupOverlay {
+  z-index: 3;
   position: fixed;
   display: flex;
   justify-content: center;

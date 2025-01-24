@@ -1,6 +1,17 @@
-.unrankedDisplay {
+.emptyDisplay {
   display: flex;
+  font-size: 2rem;
   background-color: hsl(0, 0%, 15%);
   color: white;
   justify-content: center;
+  margin: 0;
+}
+.unrankedDisplay {
+  display: flex;
+  font-size: 1rem;
+  background-color: hsl(0, 0%, 15%);
+  color: white;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
 }

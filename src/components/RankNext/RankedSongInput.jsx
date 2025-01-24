@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import styles from "./RankedSongInput.module.css"
 const RankedSongInput = ({ rankedSongList, addSongAtRank }) => {
   const [rank, setRank] = useState("");
   const [error, setError] = useState("");
@@ -36,7 +36,7 @@ const RankedSongInput = ({ rankedSongList, addSongAtRank }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <label htmlFor="rankInput">Enter Song Rank:</label>
       <input
         type="number"

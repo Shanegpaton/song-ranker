@@ -3,6 +3,7 @@ import NavBar from "./components/NavBar/NavBar";
 import RankNext from "./components/RankNext/RankNext";
 import { UnrankedSongsProvider } from "./context/UnrankedSongs";
 import { RankedSongListProvider } from "./context/RankedSongContext";
+import "./app.css"
 import Login from "./Login";
 
 
@@ -15,7 +16,9 @@ function App() {
         <div>
           <DragDropList />
         </div>
-        <RankNext />
+        <div className="rank-next">
+          <RankNext />
+        </div>
       </RankedSongListProvider>
     </UnrankedSongsProvider>
   );

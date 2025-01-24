@@ -3,7 +3,6 @@ import styles from "./NavPopup.module.css";
 
 function TabSelector({ sendTabToParent, currentTab }) {
     const [activeTab, setActiveTab] = useState(currentTab);
-    console.log(activeTab)
     const handleClick = (tab) => {
         setActiveTab(tab);
         sendTabToParent(tab);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import styles from "./NavPopup.module.css";
 import { findArtistAndSongs, searchItem, getTracksFromAlbum } from "../../../api/GetSongsApi.js";
@@ -111,7 +111,6 @@ function Popup() {
         }
         return songs;
     }
-    useEffect(() => { console.log({ tab }) }, [tab]);
     return (
         <div>
             <button onClick={togglePopup} className={styles.popupButton}>

@@ -21,7 +21,7 @@ function RankNext() {
             ...rankedSongList.slice(rank)
         ];
         setRankedSongList(() => newArray);
-        console.log(rankedSongList)
+       
     };
 
     useEffect(() => {
@@ -35,11 +35,10 @@ function RankNext() {
         }
     }, [unrankedSongList]); // Runs only on mount
     if (!unrankedSongList[0]) {
-        return (<p className={styles.unrankedDisplay}>Click the + to add songs</p>);
+        return (<p className={styles.emptyDisplay}>Click the + to add songs</p>);
     }
     return (
         <div className={styles.unrankedDisplay}>
-            <p></p>
             <p>{unranked}</p>
             {/* <button onClick={() => rankSong(1)}>Rank</button> */}
             <RankedSongInput rankedSongList={rankedSongList} addSongAtRank={rankSong} />

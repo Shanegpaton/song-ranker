@@ -26,11 +26,6 @@ const DragDropList = () => {
         const newSongList = rankedSongList.filter((_, i) => i !== index);
         setRankedSongList(newSongList);
     };
-
-    useEffect(() => {
-        console.log("RankedSongList updated:", rankedSongList);
-    }, [rankedSongList]);
-
     return (
         <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable droppableId="droppable-list">
