@@ -4,11 +4,11 @@ This is a React web app that lets users search for songs using the Spotify API, 
 
 ## 🚀 Features
 
-- 🔍 Search for tracks and artists via the Spotify API
-- ➕ Add songs to a custom list
-- 📊 Rank songs by dragging and reordering
-- 🎧 View album art and track info
-- 📌 Highlights the first-added song as a fixed reference point
+- Search for tracks and artists via the Spotify API
+- Add songs to a custom list
+- Rank songs by dragging and reordering
+- View album art and track info
+- Highlights the first-added song as a fixed reference point
 
 ## 🛠️ Tech Stack
 
