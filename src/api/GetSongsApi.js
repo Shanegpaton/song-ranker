@@ -4,6 +4,8 @@ import { Buffer } from 'buffer';
 const client_id = '61da338eac6f4bcd9642daeed0378eb4';
 const client_secret = 'dc0d1206385f4020977ad6f79b7fade3';
 
+
+
 // Function to get an access token
 async function getAccessToken() {
     const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {

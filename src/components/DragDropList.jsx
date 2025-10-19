@@ -1,11 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import Song from "./song/song";
 import { useRankedSongs } from "../context/RankedSongContext";
 
 const DragDropList = () => {
     const { rankedSongList, setRankedSongList } = useRankedSongs();
+    const [loggedIn, setLoggedIn] = useState(false);
 
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const res = await fetch('http://localhost:3000/session', {
+                    credentials: 'include',
+                });
+                const data = await res.json();
+                setLoggedIn(data.loggedIn);
+            } catch (error) {
+                console.error("Error checking session:", error);
+                setLoggedIn(false);
+            }
+        };
+
+        checkSession();
+    }, []);
     // Handle drag end and reorder the items
     const handleOnDragEnd = (result) => {
         const { destination, source } = result;
@@ -63,7 +80,7 @@ const DragDropList = () => {
                                 </Draggable>
                             ))
                         ) : (
-                            <p
+                            loggedIn && <p
                                 style={{
                                     color: "white",
                                     fontSize: "20px",

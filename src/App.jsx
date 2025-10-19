@@ -6,13 +6,12 @@ import { RankedSongListProvider } from "./context/RankedSongContext";
 import "./app.css"
 import Login from "./Login";
 
-
 function App() {
   return (
     <UnrankedSongsProvider>
       <RankedSongListProvider>
         <NavBar />
-        {/* <Login /> */}
+        <Login />
         <div>
           <DragDropList />
         </div>

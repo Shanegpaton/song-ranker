@@ -1,17 +1,82 @@
-import React from "react"
-import { Container } from "react-bootstrap"
+import React, { useEffect, useState } from "react"
+import { Container, Spinner, Alert } from "react-bootstrap"
+import axios from "axios"
 
 const AUTH_URL = "https://accounts.spotify.com/authorize?client_id=61da338eac6f4bcd9642daeed0378eb4&response_type=code&redirect_uri=http://localhost:5173&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state"
 
 export default function Login() {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [sessionLoading, setSessionLoading] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        fetch("http://localhost:3000/session", {
+            credentials: "include"
+        })
+            .then(res => res.json())
+            .then(data => {
+                setLoggedIn(data.loggedIn);
+                setSessionLoading(false);
+            })
+            .catch(() => {
+                setSessionLoading(false);
+            });
+
+        const code = new URLSearchParams(window.location.search).get("code");
+        if (code) {
+            setLoading(true);
+            axios.post("http://localhost:3000/login", { code }, { withCredentials: true })
+                .then(res => {
+                    setLoggedIn(true);
+                    setLoading(false);
+                    setSessionLoading(false);
+                    window.history.replaceState({}, document.title, "/");
+                })
+                .catch(() => {
+                    setError("Failed to log in with Spotify. Try again.");
+                    setLoading(false);
+                });
+        }
+    }, []);
+
+    if (loading || sessionLoading) {
+        return (
+            <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+                <Spinner animation="border" variant="success" />
+            </Container>
+        );
+    }
+
+    if (loggedIn) {
+        return (
+            null
+        );
+    }
+
     return (
-        <Container
-            className="d-flex justify-content-center align-items-center"
-            style={{ minHeight: "100vh" }}
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "75vh",
+            }}
         >
-            <a className="btn btn-success btn-lg" href={AUTH_URL}>
+            <a
+                href={AUTH_URL}
+                style={{
+                    backgroundColor: "hsl(141, 73%, 42%)",
+                    color: "black",
+                    fontSize: "2rem",
+                    padding: "1.5rem 3rem",
+                    textDecoration: "none",
+                    borderRadius: "8px",
+                    fontWeight: "bold",
+                }}
+            >
                 Login With Spotify
             </a>
-        </Container>
+        </div>
     )
 }
