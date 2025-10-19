@@ -6,8 +6,8 @@
 // const app = express();
 // app.use(bodyParser.urlencoded({ extended: true }));
 
-// const client_id = '61da338eac6f4bcd9642daeed0378eb4'; // Replace with your Spotify client ID
-// const client_secret = 'dc0d1206385f4020977ad6f79b7fade3'; // Replace with your Spotify client secret
+// const client_id = '//'; // Replace with your Spotify client ID
+// const client_secret = '//'; // Replace with your Spotify client secret
 // const redirect_uri = 'http://localhost:3001/callback'; // Replace with your redirect URI
 
 // app.get('/callback', function (req, res) {
