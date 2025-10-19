@@ -3,6 +3,9 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const session = require("express-session");
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
+const spotifyAuth = require('./middleware/spotifyAuth');
+
 
 app.use(express.json());
 app.use(cors({
@@ -11,7 +14,7 @@ app.use(cors({
 }));
 
 app.use(session({
-    secret: '74389yhrgiuebfdjknvcm,uhwfsivur',
+    secret: process.env.session_secret,
     resave: false,
     httpOnly: true,
     saveUninitialized: true,
@@ -22,8 +25,8 @@ app.post('/login', async (req, res) => {
     const code = req.body.code;
     const spotifyWebApi = new SpotifyWebApi({
         redirectUri: 'http://localhost:5173',
-        clientId: '61da338eac6f4bcd9642daeed0378eb4',
-        clientSecret: 'dc0d1206385f4020977ad6f79b7fade3'
+        clientId: process.env.client_id,
+        clientSecret: process.env.client_secret,
     });
     try {
         const data = await spotifyWebApi.authorizationCodeGrant(code);
@@ -47,7 +50,10 @@ app.get('/session', (req, res) => {
     }
 });
 
-app.get('/get-albums', async (req, res) => {
+app.use('/spotify', spotifyAuth);
+
+
+app.get('/spotify/get-albums', async (req, res) => {
     const { artistId, includeGroups } = req.query;
     let albums = [];
     let nextPage = `https://api.spotify.com/v1/artists/${artistId}/albums`;
@@ -56,7 +62,7 @@ app.get('/get-albums', async (req, res) => {
     while (nextPage) {
         const response = await axios.get(nextPage, {
             headers: {
-                'Authorization': `Bearer ${await getAccessToken()}`,
+                'Authorization': `Bearer ${req.session.accessToken}}`,
             },
             params: {
                 market: 'US', // Specify the market (e.g., US)
@@ -71,9 +77,36 @@ app.get('/get-albums', async (req, res) => {
     res.json(albums); // Return all albums
 });
 
-app.get('/', (req, res) => {
-    res.send("Hello World");
+app.get('/spotify/get-tracks', async (req, res) => {
+    const albumId = req.query.albumId;
+    let tracks = [];
+    let nextPage = `https://api.spotify.com/v1/albums/${albumId}/tracks`;
+
+    // Loop through the paginated tracks
+    while (nextPage) {
+        const response = await axios.get(nextPage, {
+            headers: {
+                'Authorization': `Bearer ${req.session.accessToken}}`,
+            },
+            params: {
+                limit: 50, // Number of tracks per request
+            },
+        });
+        if (album) {
+            response.data.items.forEach(track => {
+                track.album = album; // Add album properties to the track
+            });
+        }
+        tracks = tracks.concat(response.data.items); // Concatenate tracks into the array
+        nextPage = response.data.next; // Get the next page URL for pagination
+    }
+    res.json(tracks); // Return all tracks
 });
+
+
+
+
+
 app.listen(3000, () => {
     console.log('Server listening on http://localhost:3000');
 });

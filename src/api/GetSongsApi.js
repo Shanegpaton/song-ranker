@@ -7,48 +7,49 @@ const client_secret = 'dc0d1206385f4020977ad6f79b7fade3';
 
 
 // Function to get an access token
-async function getAccessToken() {
-    const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
-        headers: {
-            'Authorization': 'Basic ' + Buffer.from(`${client_id}:${client_secret}`).toString('base64'),
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        params: {
-            grant_type: 'client_credentials',
-        },
-    });
+// async function getAccessToken() {
+//     const tokenResponse = await axios.post('https://accounts.spotify.com/api/token', null, {
+//         headers: {
+//             'Authorization': 'Basic ' + Buffer.from(`${client_id}:${client_secret}`).toString('base64'),
+//             'Content-Type': 'application/x-www-form-urlencoded',
+//         },
+//         params: {
+//             grant_type: 'client_credentials',
+//         },
+//     });
 
-    return tokenResponse.data.access_token;
-}
+//     return tokenResponse.data.access_token;
+// }
 
 // Function to get all albums by an artist (only albums, not playlists or singles)
-async function getAllAlbums(artistId, includeGroups) {
-    let albums = [];
-    let nextPage = `https://api.spotify.com/v1/artists/${artistId}/albums`;
+// async function getAllAlbums(artistId, includeGroups) {
+//     let albums = [];
+//     let nextPage = `https://api.spotify.com/v1/artists/${artistId}/albums`;
 
-    // Loop through the paginated albums
-    while (nextPage) {
-        const response = await axios.get(nextPage, {
-            headers: {
-                'Authorization': `Bearer ${await getAccessToken()}`,
-            },
-            params: {
-                market: 'US', // Specify the market (e.g., US)
-                limit: 50, // Number of albums per request
-                include_groups: includeGroups, // Filter to get only albums
-            },
-        });
+//     // Loop through the paginated albums
+//     while (nextPage) {
+//         const response = await axios.get(nextPage, {
+//             headers: {
+//                 'Authorization': `Bearer ${await getAccessToken()}`,
+//             },
+//             params: {
+//                 market: 'US', // Specify the market (e.g., US)
+//                 limit: 50, // Number of albums per request
+//                 include_groups: includeGroups, // Filter to get only albums
+//             },
+//         });
 
-        albums = albums.concat(response.data.items); // Concatenate albums into the array
-        nextPage = response.data.next; // Get the next page URL for pagination
-    }
-    return albums; // Return all albums
-}
+//         albums = albums.concat(response.data.items); // Concatenate albums into the array
+//         nextPage = response.data.next; // Get the next page URL for pagination
+//     }
+//     return albums; // Return all albums
+// }
 
-// Function to get all tracks from an album
-// export async function getTracksFromAlbum(albumId) {
+
+// Function to get all tracks from an album and include album properties in each track
+// export async function getTracksFromAlbum(album) {
 //     let tracks = [];
-//     let nextPage = `https://api.spotify.com/v1/albums/${albumId}/tracks`;
+//     let nextPage = `https://api.spotify.com/v1/albums/${album.id}/tracks`;
 
 //     // Loop through the paginated tracks
 //     while (nextPage) {
@@ -61,43 +62,20 @@ async function getAllAlbums(artistId, includeGroups) {
 //             },
 //         });
 
+//         // Loop through the tracks and add album properties to each track
+
+//         if (album) {
+//             response.data.items.forEach(track => {
+//                 track.album = album; // Add album properties to the track
+//             });
+//         }
+
 //         tracks = tracks.concat(response.data.items); // Concatenate tracks into the array
 //         nextPage = response.data.next; // Get the next page URL for pagination
 //     }
 
-//     return tracks; // Return all tracks
+//     return tracks; // Return all tracks with album properties included
 // }
-
-// Function to get all tracks from an album and include album properties in each track
-export async function getTracksFromAlbum(album) {
-    let tracks = [];
-    let nextPage = `https://api.spotify.com/v1/albums/${album.id}/tracks`;
-
-    // Loop through the paginated tracks
-    while (nextPage) {
-        const response = await axios.get(nextPage, {
-            headers: {
-                'Authorization': `Bearer ${await getAccessToken()}`,
-            },
-            params: {
-                limit: 50, // Number of tracks per request
-            },
-        });
-
-        // Loop through the tracks and add album properties to each track
-
-        if (album) {
-            response.data.items.forEach(track => {
-                track.album = album; // Add album properties to the track
-            });
-        }
-
-        tracks = tracks.concat(response.data.items); // Concatenate tracks into the array
-        nextPage = response.data.next; // Get the next page URL for pagination
-    }
-
-    return tracks; // Return all tracks with album properties included
-}
 
 
 // Main function to combine everything and get all artist 2s
