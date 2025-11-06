@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from "react"
 import { Container, Spinner, Alert } from "react-bootstrap"
 import axios from "axios"
+import { useAuth } from "./context/AuthContext"
 
 const AUTH_URL = "https://accounts.spotify.com/authorize?client_id=61da338eac6f4bcd9642daeed0378eb4&response_type=code&redirect_uri=http://localhost:5173&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state"
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [sessionLoading, setSessionLoading] = useState(true);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const { loggedIn, setLoggedIn, sessionLoading } = useAuth();
 
     useEffect(() => {
-        fetch("http://localhost:3000/auth/sessions", {
-            credentials: "include"
-        })
-            .then(res => res.json())
-            .then(data => {
-                setLoggedIn(data.loggedIn);
-                setSessionLoading(false);
-            })
-            .catch(() => {
-                setSessionLoading(false);
-            });
-
         const code = new URLSearchParams(window.location.search).get("code");
         if (code) {
             setLoading(true);
@@ -30,7 +18,6 @@ export default function Login() {
                 .then(res => {
                     setLoggedIn(true);
                     setLoading(false);
-                    setSessionLoading(false);
                     window.history.replaceState({}, document.title, "/");
                 })
                 .catch(() => {
@@ -38,7 +25,7 @@ export default function Login() {
                     setLoading(false);
                 });
         }
-    }, []);
+    }, [setLoggedIn]);
 
     if (loading || sessionLoading) {
         return (
