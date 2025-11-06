@@ -10,7 +10,7 @@ const DragDropList = () => {
     useEffect(() => {
         const checkSession = async () => {
             try {
-                const res = await fetch('http://localhost:3000/session', {
+                const res = await fetch('http://localhost:3000/auth/sessions', {
                     credentials: 'include',
                 });
                 const data = await res.json();

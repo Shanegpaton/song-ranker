@@ -79,51 +79,51 @@ const client_secret = 'dc0d1206385f4020977ad6f79b7fade3';
 
 
 // Main function to combine everything and get all artist 2s
-export async function findArtistAndSongs(artistId, includeGroups) {
-    try {
-        const albums = await getAllAlbums(artistId, includeGroups);
-        let allTracks = [];
+// export async function findArtistAndSongs(artistId, includeGroups) {
+//     try {
+//         const albums = await getAllAlbums(artistId, includeGroups);
+//         let allTracks = [];
 
-        // Iterate through each album and fetch tracks
-        for (const album of albums) {
-            const tracks = await getTracksFromAlbum(album);
-            allTracks = allTracks.concat(tracks); // Concatenate tracks into the array
-        }
-        return (allTracks);
-    } catch (error) {
-        console.error('Error:', error.message);
-    }
-}
+//         // Iterate through each album and fetch tracks
+//         for (const album of albums) {
+//             const tracks = await getTracksFromAlbum(album);
+//             allTracks = allTracks.concat(tracks); // Concatenate tracks into the array
+//         }
+//         return (allTracks);
+//     } catch (error) {
+//         console.error('Error:', error.message);
+//     }
+// }
 
 
 
-export async function searchItem(type, name) {
-    const url = 'https://api.spotify.com/v1/search';
-    const token = await getAccessToken();
-    try {
-        const response = await axios.get(url, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            params: {
-                q: name,
-                type: type, // Searching for 'album', 'track', etc.
-                limit: 3, // Limit the number of results
-            },
-        });
+// export async function searchItem(type, name) {
+//     const url = 'https://api.spotify.com/v1/search';
+//     const token = await getAccessToken();
+//     try {
+//         const response = await axios.get(url, {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//                 'Content-Type': 'application/json',
+//             },
+//             params: {
+//                 q: name,
+//                 type: type, // Searching for 'album', 'track', etc.
+//                 limit: 3, // Limit the number of results
+//             },
+//         });
 
-        const path = `data.${type}s.items`;
-        const items = path.split('.').reduce((acc, key) => acc && acc[key], response);
+//         const path = `data.${type}s.items`;
+//         const items = path.split('.').reduce((acc, key) => acc && acc[key], response);
 
-        if (items) {
-            return items;
-        } else {
-            console.log('No items found.');
-            return [];
-        }
-    } catch (error) {
-        console.error('Error fetching data:', error.response?.data || error.message);
-        throw error;
-    }
-}
+//         if (items) {
+//             return items;
+//         } else {
+//             console.log('No items found.');
+//             return [];
+//         }
+//     } catch (error) {
+//         console.error('Error fetching data:', error.response?.data || error.message);
+//         throw error;
+//     }
+// }

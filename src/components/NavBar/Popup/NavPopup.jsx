@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import styles from "./NavPopup.module.css";
-import { findArtistAndSongs, searchItem, getTracksFromAlbum } from "../../../api/GetSongsApi.js";
 import TabSelector from "./TabSelector.jsx";
 import SongOption from "./songOption/SongOption.jsx";
 import { useUnrankedSongsContext } from "../../../context/UnrankedSongs.jsx";
+import axios from "axios";
 
 
 function Popup() {
@@ -34,19 +34,46 @@ function Popup() {
         }
 
         if (tab === "Artist") {
-            setOptions(await searchItem("artist", searchQuery));
+            const response = await axios.get("http://localhost:3000/spotify/search", {
+                params: {
+                    type: "artist",
+                    name: searchQuery
+                },
+                withCredentials: true,
+            });
+            setOptions(response.data);
 
             // findArtistAndSongs(searchQuery, "album");
         }
         if (tab === "Song") {
-            setOptions(await searchItem("track", searchQuery));
+            const response = await axios.get("http://localhost:3000/spotify/search", {
+                params: {
+                    type: "track",
+                    name: searchQuery
+                },
+                withCredentials: true,
+            });
+            setOptions(response.data);
         }
         if (tab === "Everything") {
-            setOptions(await searchItem("artist", searchQuery));
-            // findArtistAndSongs(searchQuery, "album,single");
+            const response = await axios.get("http://localhost:3000/spotify/search", {
+                params: {
+                    type: "artist",
+                    name: searchQuery
+                },
+                withCredentials: true,
+            });
+            setOptions(response.data);
         }
         if (tab === "Album") {
-            setOptions(await searchItem("album", searchQuery));
+            const response = await axios.get("http://localhost:3000/spotify/search", {
+                params: {
+                    type: "album",
+                    name: searchQuery
+                },
+                withCredentials: true,
+            });
+            setOptions(response.data);
         }
 
 
@@ -97,17 +124,41 @@ function Popup() {
 
     const convertToSongs = async (item) => {
         let songs = [];
-        if (tab === "Artist") {
-            songs = findArtistAndSongs(item.id, "album");
-        }
-        if (tab === "Song") {
-            songs.push(item);
-        }
-        if (tab === "Everything") {
-            songs = findArtistAndSongs(item.id, "album,single");
-        }
-        if (tab === "Album") {
-            songs = getTracksFromAlbum(item);
+        try {
+            if (tab === "Artist") {
+                const response = await axios.get(`http://localhost:3000/spotify/artists/${item.id}/tracks`, {
+                    params: {
+                        include_groups: "album"
+                    },
+                    withCredentials: true,
+                });
+                songs = response.data;
+            }
+            if (tab === "Song") {
+                songs.push(item);
+            }
+            if (tab === "Everything") {
+                const response = await axios.get(`http://localhost:3000/spotify/artists/${item.id}/tracks`, {
+                    params: {
+                        include_groups: "album,single"
+                    },
+                    withCredentials: true,
+                });
+                songs = response.data;
+            }
+            if (tab === "Album") {
+                const response = await axios.get(`http://localhost:3000/spotify/albums/${item.id}/tracks`, {
+                    withCredentials: true,
+                });
+                // Add album metadata to tracks
+                response.data.forEach(track => {
+                    track.album = item;
+                });
+                songs = response.data;
+            }
+        } catch (error) {
+            console.error("Error fetching songs:", error);
+            songs = [];
         }
         return songs;
     }

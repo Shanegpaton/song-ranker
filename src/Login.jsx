@@ -11,7 +11,7 @@ export default function Login() {
     const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:3000/session", {
+        fetch("http://localhost:3000/auth/sessions", {
             credentials: "include"
         })
             .then(res => res.json())
@@ -26,7 +26,7 @@ export default function Login() {
         const code = new URLSearchParams(window.location.search).get("code");
         if (code) {
             setLoading(true);
-            axios.post("http://localhost:3000/login", { code }, { withCredentials: true })
+            axios.post("http://localhost:3000/auth/sessions", { code }, { withCredentials: true })
                 .then(res => {
                     setLoggedIn(true);
                     setLoading(false);

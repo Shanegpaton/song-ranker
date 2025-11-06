@@ -3,8 +3,11 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const session = require("express-session");
 const cors = require('cors');
 const app = express();
+const axios = require('axios');
 require('dotenv').config();
 const spotifyAuth = require('./middleware/spotifyAuth');
+const { getAlbumsForArtist, getTracksForAlbum } = require('./spotifyService');
+
 
 
 app.use(express.json());
@@ -14,19 +17,20 @@ app.use(cors({
 }));
 
 app.use(session({
-    secret: process.env.session_secret,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     httpOnly: true,
     saveUninitialized: true,
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
-app.post('/login', async (req, res) => {
+// Authentication routes
+app.post('/auth/sessions', async (req, res) => {
     const code = req.body.code;
     const spotifyWebApi = new SpotifyWebApi({
         redirectUri: 'http://localhost:5173',
-        clientId: process.env.client_id,
-        clientSecret: process.env.client_secret,
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
     });
     try {
         const data = await spotifyWebApi.authorizationCodeGrant(code);
@@ -42,7 +46,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/session', (req, res) => {
+app.get('/auth/sessions', (req, res) => {
     if (req.session.accessToken) {
         res.json({ loggedIn: true });
     } else {
@@ -50,62 +54,92 @@ app.get('/session', (req, res) => {
     }
 });
 
+// Spotify API proxy routes (require authentication)
 app.use('/spotify', spotifyAuth);
 
-
-app.get('/spotify/get-albums', async (req, res) => {
-    const { artistId, includeGroups } = req.query;
-    let albums = [];
-    let nextPage = `https://api.spotify.com/v1/artists/${artistId}/albums`;
-
-    // Loop through the paginated albums
-    while (nextPage) {
-        const response = await axios.get(nextPage, {
-            headers: {
-                'Authorization': `Bearer ${req.session.accessToken}}`,
-            },
-            params: {
-                market: 'US', // Specify the market (e.g., US)
-                limit: 50, // Number of albums per request
-                include_groups: includeGroups, // Filter to get only albums
-            },
-        });
-
-        albums = albums.concat(response.data.items); // Concatenate albums into the array
-        nextPage = response.data.next; // Get the next page URL for pagination
+// Get all albums for an artist
+app.get('/spotify/artists/:artistId/albums', async (req, res) => {
+    const { artistId } = req.params;
+    const { include_groups } = req.query;
+    try {
+        const albums = await getAlbumsForArtist(
+            artistId,
+            include_groups,
+            req.session.accessToken
+        );
+        res.json(albums);
+    } catch (error) {
+        console.error('Error fetching albums:', error.message);
+        res.status(500).json({ error: 'Failed to fetch albums' });
     }
-    res.json(albums); // Return all albums
 });
 
-app.get('/spotify/get-tracks', async (req, res) => {
-    const albumId = req.query.albumId;
-    let tracks = [];
-    let nextPage = `https://api.spotify.com/v1/albums/${albumId}/tracks`;
+// Get all tracks from an album
+app.get('/spotify/albums/:albumId/tracks', async (req, res) => {
+    const { albumId } = req.params;
+    try {
+        const tracks = await getTracksForAlbum(albumId, req.session.accessToken);
+        res.json(tracks);
+    } catch (error) {
+        console.error('Error fetching tracks:', error.message);
+        res.status(500).json({ error: 'Failed to fetch tracks' });
+    }
+});
 
-    // Loop through the paginated tracks
-    while (nextPage) {
-        const response = await axios.get(nextPage, {
-            headers: {
-                'Authorization': `Bearer ${req.session.accessToken}}`,
-            },
-            params: {
-                limit: 50, // Number of tracks per request
-            },
-        });
-        if (album) {
-            response.data.items.forEach(track => {
-                track.album = album; // Add album properties to the track
-            });
+// Get all tracks from all albums by an artist
+app.get('/spotify/artists/:artistId/tracks', async (req, res) => {
+    const { artistId } = req.params;
+    const { include_groups } = req.query;
+    try {
+        const albums = await getAlbumsForArtist(
+            artistId,
+            include_groups,
+            req.session.accessToken
+        );
+
+        let allTracks = [];
+        for (const album of albums) {
+            const tracks = await getTracksForAlbum(album.id, req.session.accessToken);
+            allTracks.push(...tracks);
         }
-        tracks = tracks.concat(response.data.items); // Concatenate tracks into the array
-        nextPage = response.data.next; // Get the next page URL for pagination
+
+        res.json(allTracks);
+    } catch (error) {
+        console.error('Error fetching artist songs:', error.message);
+        res.status(500).json({ error: 'Failed to fetch artist songs' });
     }
-    res.json(tracks); // Return all tracks
 });
 
 
+app.get('/spotify/search', async (req, res) => {
+    const url = 'https://api.spotify.com/v1/search';
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${req.session.accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            params: {
+                q: req.query.name,
+                type: req.query.type, // Searching for 'album', 'track', etc.
+                limit: 3, // Limit the number of results
+            },
+        });
 
+        const path = `data.${req.query.type}s.items`;
+        const items = path.split('.').reduce((acc, key) => acc && acc[key], response);
 
+        if (items) {
+            res.json(items);
+        } else {
+            console.log('No items found.');
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error.response?.data || error.message);
+        throw error;
+    }
+});
 
 app.listen(3000, () => {
     console.log('Server listening on http://localhost:3000');

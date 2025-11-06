@@ -1,12 +1,13 @@
 const SpotifyWebApi = require("spotify-web-api-node");
+require('dotenv').config({ path: '../.env' });
 
 const spotifyAuth = async (req, res, next) => {
     if (!req.session.accessToken || !req.session.refreshToken) {
         return res.status(401).json({ error: "User not authenticated with Spotify" });
     }
     const spotifyApi = new SpotifyWebApi({
-        clientId: process.env.client_id,
-        clientSecret: process.env.client_secret,
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
     });
     spotifyApi.setAccessToken(req.session.accessToken);
     spotifyApi.setRefreshToken(req.session.refreshToken);
