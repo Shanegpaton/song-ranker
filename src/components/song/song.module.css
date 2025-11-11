@@ -4,7 +4,7 @@
   align-items: center;
   border-radius: 3rem;
   padding: 10px 20px;
-  margin: 10px 0;
+  margin: 10px ;
   width: 80%;
   height: 50px;
   background-color: hsl(0, 0%, 15%);
@@ -18,20 +18,34 @@
   font-size: 1.5rem;
   margin: 5px;
 }
-.deleteSongButton {
-  font-size: 3rem;
+.buttonBase {
   height: 50px;
   width: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 25px;
-}
-.deleteSongButton:hover {
-  background-color: hsl(0, 0%, 35%);
-  transition: ease 0.25s;
+  border: none;
+  background: transparent;
+  color: white;
   cursor: pointer;
+  transition: background-color 0.25s ease;
 }
+
+.buttonBase:hover {
+  background-color: hsl(0, 0%, 35%);
+}
+
+.playButton {
+  composes: buttonBase;
+  font-size: 2rem;
+}
+
+.deleteSongButton {
+  composes: buttonBase;
+  font-size: 3rem;
+}
+
 .songList {
   padding: 0;
   margin: 20px;

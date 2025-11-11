@@ -1,17 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "./song.module.css";
+import { FaPlay, FaPause } from "react-icons/fa";
 
 function Song(props) {
-
-
-
     function handleDelete(index) {
         props.deleteSong(index);
     }
 
     return (
         <section className={styles.songContainer}>
-            <h2 className={styles.ranking}>{props.rank}.</h2>
+            {props.rank > 0 && <h2 className={styles.ranking}>{props.rank}.</h2>}
+            <button onClick={() => props.onPlay(props.songid)} className={styles.playButton}>
+                {props.isPlaying ? <FaPause /> : <FaPlay />}
+            </button>
             <p className={styles.songName}>{props.name}</p>
             <p className={styles.songName}>{props.artist}</p>
             <p className={styles.songName}>{props.length}</p>

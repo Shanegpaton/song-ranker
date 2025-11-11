@@ -48,7 +48,10 @@ app.post('/auth/sessions', async (req, res) => {
 
 app.get('/auth/sessions', (req, res) => {
     if (req.session.accessToken) {
-        res.json({ loggedIn: true });
+        res.json({
+            loggedIn: true,
+            accessToken: req.session.accessToken
+        });
     } else {
         res.json({ loggedIn: false });
     }
