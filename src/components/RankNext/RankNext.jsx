@@ -3,7 +3,6 @@ import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { useUnrankedSongsContext } from "../../context/UnrankedSongs";
 import { useRankedSongs } from "../../context/RankedSongContext";
 import { useAuth } from "../../context/AuthContext";
-import RankedSongInput from "./RankedSongInput";
 import Song from "../song/song";
 import styles from "./RankNext.module.css";
 
@@ -20,6 +19,12 @@ function RankNext() {
             ...rankedSongList.slice(rank)
         ];
         setRankedSongList(() => newArray);
+    };
+
+    const deleteUnrankedSong = () => {
+        if (unrankedSongList[0]) {
+            removeUnrankedSong(unrankedSongList[0].id);
+        }
     };
 
     // Format song data for Song component
@@ -90,7 +95,11 @@ function RankNext() {
     };
 
     if (!unrankedSongList[0]) {
-        return (<p className={styles.emptyDisplay}>Click the + to add songs</p>);
+        return (
+            <div className={styles.unrankedDisplay}>
+                <p className={styles.emptyDisplay}>Click the + to add songs</p>
+            </div>
+        );
     }
 
     const currentSong = formatSong(unrankedSongList[0]);
@@ -112,23 +121,26 @@ function RankNext() {
                                     {...provided.dragHandleProps}
                                     style={{
                                         width: "100%",
+                                        maxWidth: "1200px",
                                         display: "flex",
                                         justifyContent: "center",
                                         ...provided.draggableProps.style,
                                     }}
                                 >
-                                    <Song
-                                        index={0}
-                                        rank={0}
-                                        name={currentSong.name}
-                                        artist={currentSong.artist}
-                                        length={currentSong.length}
-                                        deleteSong={() => { }}
-                                        songid={currentSong.id}
-                                        onPlay={tooglePlay}
-                                        isActive={false}
-                                        isPlaying={false}
-                                    />
+                                    <div className={styles.unrankedSongWrapper}>
+                                        <Song
+                                            index={0}
+                                            rank={0}
+                                            name={currentSong.name}
+                                            artist={currentSong.artist}
+                                            length={currentSong.length}
+                                            deleteSong={deleteUnrankedSong}
+                                            songid={currentSong.id}
+                                            onPlay={tooglePlay}
+                                            isActive={false}
+                                            isPlaying={false}
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </Draggable>
@@ -136,7 +148,6 @@ function RankNext() {
                     </div>
                 )}
             </Droppable>
-            <RankedSongInput rankedSongList={rankedSongList} addSongAtRank={rankSong} />
         </div>
     );
 }

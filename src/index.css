@@ -4,3 +4,28 @@ body {
   background-color: black;
   margin: 0;
 }
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(0, 0%, 10%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 25%);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 35%);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(0, 0%, 25%) hsl(0, 0%, 10%);
+}

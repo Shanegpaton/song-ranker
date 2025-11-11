@@ -9,13 +9,17 @@ function Song(props) {
 
     return (
         <section className={styles.songContainer}>
-            {props.rank > 0 && <h2 className={styles.ranking}>{props.rank}.</h2>}
-            <button onClick={() => props.onPlay(props.songid)} className={styles.playButton}>
-                {props.isPlaying ? <FaPause /> : <FaPlay />}
-            </button>
-            <p className={styles.songName}>{props.name}</p>
-            <p className={styles.songName}>{props.artist}</p>
-            <p className={styles.songName}>{props.length}</p>
+            <div className={styles.leftSection}>
+                {props.rank > 0 && <h2 className={styles.ranking}>{props.rank}.</h2>}
+                <button onClick={() => props.onPlay(props.songid)} className={styles.playButton}>
+                    {props.isPlaying ? <FaPause /> : <FaPlay />}
+                </button>
+            </div>
+            <div className={styles.songInfo}>
+                <p className={styles.songName}>{props.name}</p>
+                <p className={styles.songName}>{props.artist}</p>
+                <p className={styles.songName}>{props.length}</p>
+            </div>
             <p className={styles.deleteSongButton} onClick={() => handleDelete(props.index)}> &times;</p>
         </section >
     )

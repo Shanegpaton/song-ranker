@@ -130,6 +130,7 @@ const DragDropList = () => {
                                             width: "100%",
                                             display: "flex",
                                             justifyContent: "center",
+                                            transition: "transform 0.2s ease",
                                             ...provided.draggableProps.style, // Necessary for drag effect
                                         }}
                                     >

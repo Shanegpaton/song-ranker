@@ -1,17 +1,40 @@
 .emptyDisplay {
   display: flex;
   font-size: 2rem;
-  background-color: hsl(0, 0%, 15%);
+  background-color: transparent;
   color: white;
   justify-content: center;
   margin: 0;
+  padding: 20px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .unrankedDisplay {
   display: flex;
-  font-size: 1rem;
-  background-color: hsl(0, 0%, 15%);
+  flex-direction: column;
+  background-color: hsl(0, 0%, 10%);
   color: white;
   justify-content: center;
   align-items: center;
   margin: 0;
+  padding: 20px;
+  width: 100%;
+}
+
+.unrankedDisplay > div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.unrankedSongWrapper {
+  width: 95%;
+  max-width: 1000px;
+}
+
+.unrankedSongWrapper section {
+  width: 100% !important;
+  transition: width 0.3s ease;
 }

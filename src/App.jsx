@@ -53,7 +53,7 @@ function AppContent() {
       <NavBar />
       <Login />
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div>
+        <div style={{ marginBottom: '200px' }}>
           <DragDropList />
         </div>
         <div className="rank-next">

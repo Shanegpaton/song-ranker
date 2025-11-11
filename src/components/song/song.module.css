@@ -4,15 +4,36 @@
   align-items: center;
   border-radius: 3rem;
   padding: 10px 20px;
-  margin: 10px ;
+  margin: 10px;
   width: 80%;
+  min-width: 80%;
   height: 50px;
   background-color: hsl(0, 0%, 15%);
   color: white;
+  gap: 10px;
+  transition: width 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  box-sizing: border-box;
+  will-change: width, transform;
 }
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .ranking {
   font-size: 2rem;
-  margin: 5px;
+  margin: 0;
+}
+
+.songInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  min-width: 0;
 }
 .songName {
   font-size: 1.5rem;
@@ -48,6 +69,7 @@
 
 .songList {
   padding: 0;
+  padding-bottom: 200px;
   margin: 20px;
   width: 100%;
   display: flex;
