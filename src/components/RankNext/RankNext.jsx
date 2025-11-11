@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { useUnrankedSongsContext } from "../../context/UnrankedSongs";
 import { useRankedSongs } from "../../context/RankedSongContext";
@@ -10,6 +10,35 @@ function RankNext() {
     const { unrankedSongList, removeUnrankedSong } = useUnrankedSongsContext();
     const { rankedSongList, setRankedSongList } = useRankedSongs();
     const { player, accessToken, deviceId } = useAuth();
+    const [currentPlayingSongId, setCurrentPlayingSongId] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    // Listen to player state changes to track current track and playing state
+    useEffect(() => {
+        if (!player) return;
+
+        const updateState = async () => {
+            const state = await player.getCurrentState();
+            if (state) {
+                setCurrentPlayingSongId(state.track_window.current_track.id);
+                setIsPlaying(!state.paused);
+            }
+        };
+
+        const handleStateChange = (state) => {
+            if (state) {
+                setCurrentPlayingSongId(state.track_window.current_track.id);
+                setIsPlaying(!state.paused);
+            }
+        };
+
+        player.addListener('player_state_changed', handleStateChange);
+        updateState();
+
+        return () => {
+            player.removeListener('player_state_changed', handleStateChange);
+        };
+    }, [player]);
 
     const rankSong = (rank) => {
         const removedSong = removeUnrankedSong(unrankedSongList[0].id);
@@ -43,6 +72,12 @@ function RankNext() {
     // Play function for unranked song
     const tooglePlay = async (songId) => {
         if (!player || !accessToken) return;
+
+        // If this is the currently playing song, toggle play/pause
+        if (currentPlayingSongId === songId) {
+            await player.togglePlay();
+            return;
+        }
 
         // Move to device first
         if (deviceId) {
@@ -94,16 +129,23 @@ function RankNext() {
         }
     };
 
+    const songsLeft = unrankedSongList.length;
+
     if (!unrankedSongList[0]) {
         return (
             <div className={styles.unrankedDisplay}>
                 <p className={styles.emptyDisplay}>Click the + to add songs</p>
+                <p className={styles.songsLeftCounter}>
+                    {songsLeft} {songsLeft === 1 ? 'song' : 'songs'} left to rank
+                </p>
             </div>
         );
     }
 
     const currentSong = formatSong(unrankedSongList[0]);
     const songIdString = JSON.stringify(currentSong);
+    const isActive = currentPlayingSongId === currentSong.id;
+    const isCurrentlyPlaying = isPlaying && isActive;
 
     return (
         <div className={styles.unrankedDisplay}>
@@ -137,8 +179,8 @@ function RankNext() {
                                             deleteSong={deleteUnrankedSong}
                                             songid={currentSong.id}
                                             onPlay={tooglePlay}
-                                            isActive={false}
-                                            isPlaying={false}
+                                            isActive={isActive}
+                                            isPlaying={isCurrentlyPlaying}
                                         />
                                     </div>
                                 </div>
@@ -148,6 +190,9 @@ function RankNext() {
                     </div>
                 )}
             </Droppable>
+            <p className={styles.songsLeftCounter}>
+                {songsLeft} {songsLeft === 1 ? 'song' : 'songs'} left to rank
+            </p>
         </div>
     );
 }

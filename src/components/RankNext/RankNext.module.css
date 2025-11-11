@@ -38,3 +38,11 @@
   width: 100% !important;
   transition: width 0.3s ease;
 }
+
+.songsLeftCounter {
+  margin: 10px 0 0 0;
+  font-size: 1.2rem;
+  color: hsl(0, 0%, 70%);
+  text-align: center;
+  user-select: none;
+}
